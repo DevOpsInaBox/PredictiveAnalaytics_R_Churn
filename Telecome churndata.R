@@ -1,5 +1,4 @@
-install.packages("pROC",repos="http://cran.us.r-project.org")
-install.packages("rattle",repos="http://cran.us.r-project.org")
+install.packages("rattle",repos="https://rattle.togaware.com", type="source")
 library(caTools)
 library(Amelia)
 library(dplyr)
