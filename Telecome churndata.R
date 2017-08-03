@@ -10,7 +10,7 @@ library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
 
-setwd("E:\\Data Creation\\Telecom")
+#setwd("E:\\Data Creation\\Telecom")
 telecomdata<-read.csv("WA_Fn-UseC_-Telco-Customer-Churn.csv",header = T)
 head(telecomdata)
 which(is.na(telecomdata$tenure))
