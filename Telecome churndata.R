@@ -1,3 +1,4 @@
+install.packages("ggplot2",repos = "http://cran.us.r-project.org")
 library(caTools)
 library(Amelia)
 library(dplyr)
