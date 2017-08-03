@@ -12,6 +12,7 @@ library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
 library(ggplot2)
+library(rattle)
 
 #setwd("E:\\Data Creation\\Telecom")
 telecomdata<-read.csv("WA_Fn-UseC_-Telco-Customer-Churn.csv",header = T)
