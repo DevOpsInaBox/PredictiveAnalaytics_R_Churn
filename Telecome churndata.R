@@ -1,4 +1,4 @@
-install.packages("ggplot2",repos = "http://cran.us.r-project.org")
+
 library(caTools)
 library(Amelia)
 library(dplyr)
@@ -10,7 +10,7 @@ library(ROCR)
 library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
-library(ggplot)
+library(ggplot2)
 
 #setwd("E:\\Data Creation\\Telecom")
 telecomdata<-read.csv("WA_Fn-UseC_-Telco-Customer-Churn.csv",header = T)
