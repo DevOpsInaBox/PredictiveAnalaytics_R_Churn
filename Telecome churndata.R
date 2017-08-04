@@ -1,4 +1,3 @@
-install.packages("rattle")
 library(caTools)
 library(Amelia)
 library(dplyr)
@@ -159,11 +158,11 @@ table(Prediction_c,testData$Churn)
 mytree_sel<-rpart(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,method ="class")
 mytree_sel<-rpart(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,method ="class",control=rpart.control(minsplit=2, cp=0.005))
 new.fit <- prp(mytree_sel,snip=TRUE)$obj
-fancyRpartPlot(mytree)
 fancyRpartPlot(mytree_sel)
 mytree<-rpart(Churn ~ .,data=trainData,method = "class")
 plot(mytree)
 text(mytree)
+fancyRpartPlot(mytree)
 #Random Forest
 set.seed(415)
 mytree<-randomForest(Churn ~ .,data=trainData,importance = T)
@@ -180,6 +179,3 @@ mytree1<-cforest(Churn ~ .,data=trainData,controls=cforest_unbiased(ntree=200, m
 Prediction <- predict(mytree1, testData, OOB=TRUE, type = "response")
 table(Prediction,testData$Churn)
 (1397+288)/nrow(testData)
-# test the model with test dataset
-test.predictions <- predict(telecomModel,newdata=testData,type="response")
-
