@@ -88,7 +88,7 @@ tenure_intr <- sapply(args[9],group_tenure)
 tenure_intr <- as.factor(tenure_intr)
 x<-data.frame(args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],tenure_intr,args[10],args[11])
 names(x)<-c("PaymentMethod","OnlineSecurity","MonthlyCharges","StreamingMovies","PaperlessBilling","StreamingTV","InternetService","Contract","tenure_interval","MultipleLines","SeniorCitizen")
-testData<-rbind(output_dataset,x)
+testData<-rbind(testData,x)
 
 # Predict with the model and input args. If the prediction probability is greater than 0.5 then those 
 # customers are classified as churned customer less than 0.5 are classified as not churning customer
