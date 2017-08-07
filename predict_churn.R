@@ -102,10 +102,13 @@ print("Customer is predicted to churn out of Verizon based on Model 1")
 print("Customer is predicted to stay with Verizon based on Model 1")
 }
 
+str(telecomdata)
+str(testData)
+
 #Random Forest with selection variables
 set.seed(415)
-mytree_sel<-randomForest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=telecomdata)
-pred_sel<-predict(mytree_sel, newdata =testData)
+mytree_sel<-randomForest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=telecomdata,importance = T)
+pred_sel<-predict(mytree_sel, newdata =testData,type="response")
 fitted_result_2 <- ifelse(pred_sel > 0.5,'Yes','No')
 if(fitted_result_2 == 'Yes'){
 print("Customer is predicted to churn out of Verizon based on Model 2")
