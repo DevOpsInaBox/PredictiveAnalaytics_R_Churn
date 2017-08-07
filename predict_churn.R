@@ -83,9 +83,9 @@ testData<-data.frame(PaymentMethod=as.factor(args[1]),OnlineSecurity=as.factor(a
 test.predictionsstep_response <- predict(telecomModelstep_1,newdata=testData,type="response")
 fitted_result <- ifelse(test.predictionsstep_response > 0.5,'Yes','No')
 if(fitted_result == 'Yes'){
-print("Customer is predicted to churn out of Verizon based on Model 1")
+print("Customer is predicted to churn out of Verizon")
 }else{
-print("Customer is predicted to stay with Verizon based on Model 1")
+print("Customer is predicted to stay with Verizon")
 }
 
 #Random Forest with selection variables
