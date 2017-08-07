@@ -103,7 +103,7 @@ testData$Churn[testData$Churn=="No"] <- "0"
 testData$Churn[testData$Churn=="Yes"] <- "1"
 
 # confusion matrix
-print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis)")
+print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for Test Data")
 table(testData$Churn,test.predictionsstep_response > 0.5)
 # calculating the misclassfication rate
 misClasificationError <- mean(fitted.results!=testData$Churn)
@@ -115,7 +115,12 @@ print(paste0("Hence, Accuracy rate for the Prediction Model is found to be : ",a
 plot(roc(testData$Churn, test.predictionsstep_response, direction="<"), col="yellow", lwd=3, main="ROC Curve")
 
 #Actual ROC Curve
-prediction_object<-prediction(test.predictionsstep_response,telecomdata$Churn)
+# logistic regression model on  without step on training the data
+tele<-glm(Churn ~PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,family=binomial(link="logit"),data=telecomdata)
+preddicted_val<-predict(tele,type = "response")
+print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for the whole Telecom Data")
+table(telecomdata$Churn,preddicted_val>0.5)
+prediction_object<-prediction(preddicted_val,telecomdata$Churn)
 perf_1<-performance(prediction_object,measure = "tpr",x.measure = "fpr")
 plot(perf_1)
 
