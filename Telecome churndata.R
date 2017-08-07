@@ -137,16 +137,6 @@ print("Confusion Matrix for Random Forest Prediction")
 table(pred_sel,testData$Churn)
 print(paste0("Accuracy of Random Forerst Prediction:",sum(diag(table(pred_sel,testData$Churn)))/nrow(testData)))
 
-#CForest with selection variables
-mytree_sel_cf<-cforest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,controls=cforest_unbiased(ntree=200, mtry=3))
-print("**********************************************Summary of CForest Prediction***************************************************")
-summary(mytree_sel_cf)
-print("************************************************************************************************************************************")
-Prediction_c <- predict(mytree_sel_cf, testData, OOB=TRUE, type = "response")
-print("Confusion Matrix for CForest Prediction")
-table(Prediction_c,testData$Churn)
-print(paste0("Accuracy of CForerst Prediction:",sum(diag(table(Prediction_c,testData$Churn)))/nrow(testData)))
-
 #Random Forest Plotting
 mytree_sel<-rpart(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,method ="class",control=rpart.control(minsplit=2, cp=0.005))
 fancyRpartPlot(mytree_sel)
