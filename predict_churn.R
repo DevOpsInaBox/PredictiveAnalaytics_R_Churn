@@ -1,3 +1,4 @@
+setwd("/var/lib/jenkins/workspace/PredictiveAnalytics_R_Churn/")
 library(caTools)
 library(Amelia)
 library(dplyr)
@@ -13,13 +14,9 @@ library(RColorBrewer)
 library(ggplot2)
 library(rattle)
 
-#setwd("E:\\Data Creation\\Telecom")
+args<-commandArgs(TRUE)
 telecomdata<-read.csv("WA_Fn-UseC_-Telco-Customer-Churn.csv",header = T)
-which(is.na(telecomdata$tenure))
-telecomdata[!complete.cases(telecomdata), ]
 
-table(telecomdata$Churn)
-any(is.na(telecomdata))
 #Create new column tenure_interval from the tenure column
 group_tenure <- function(tenure){
   if (tenure >= 0 && tenure <= 6){
@@ -82,64 +79,32 @@ telecomdata <- na.omit(telecomdata)
 # set the seed it will output same output when ever the model is executed
 set.seed(123)
 
-# sample the input data with 70% for training and 30% for testing
-sample <- sample.split(telecomdata$Churn,SplitRatio=0.70)
-trainData <- subset(telecomdata,sample==TRUE)
-testData <- subset(telecomdata,sample==FALSE)
-#Stepwise Regression
-telecomModelstep <- step(glm(Churn ~ .,family=binomial(link="logit"),data=trainData),direction = "backward")
-telecomModelstep_1<-glm(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,family=binomial(link="logit"))
-plot(telecomModelstep_1)
-print(summary(telecomModelstep_1))
+#Churn Model using Logistic Regression
+telecomModelstep_1<-glm(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=telecomdata,family=binomial(link="logit"))
 
-# test the model with test dataset
-test.predictionsstep_response <- predict(telecomModelstep_1,newdata=testData,type="response")
+# testData Preparation with input arguments from Java
+testData<-data.frame(PaymentMethod=factor(),OnlineSecurity=factor(),MonthlyCharges=double(),StreamingMovies=factor(),PaperlessBilling=factor(),StreamingTV=factor(),InternetService=factor(),Contract=factor(),tenure_interval=factor(),MultipleLines=factor(),SeniorCitizen=integer());
+tenure_intr <- sapply(args[9],group_tenure)
+tenure_intr <- as.factor(tenure_intr)
+x<-data.frame(args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],tenure_intr,args[10],args[11])
+names(x)<-c("PaymentMethod","OnlineSecurity","MonthlyCharges","StreamingMovies","PaperlessBilling","StreamingTV","InternetService","Contract","tenure_interval","MultipleLines","SeniorCitizen")
+testData<-rbind(output_dataset,x)
 
-# if the prediction probability is greater than 0.5 then those 
+# Predict with the model and input args. If the prediction probability is greater than 0.5 then those 
 # customers are classified as churned customer less than 0.5 are classified as not churning customer
-fitted.results <- ifelse(test.predictionsstep_response > 0.5,1,0)
-testData$Churn <- as.character(testData$Churn)
-testData$Churn[testData$Churn=="No"] <- "0"
-testData$Churn[testData$Churn=="Yes"] <- "1"
-
-# confusion matrix
-print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for Test Data")
-table(testData$Churn,test.predictionsstep_response > 0.5)
-# calculating the misclassfication rate
-misClasificationError <- mean(fitted.results!=testData$Churn)
-print(paste0("Misclassification rate for the Prediction Model is found to be : ",misClasificationError))
-# calculating the accuracy rate
-accuracyRate <- 1-misClasificationError
-print(paste0("Hence, Accuracy rate for the Prediction Model is found to be : ",accuracyRate))
-
-plot(roc(testData$Churn, test.predictionsstep_response, direction="<"), col="yellow", lwd=3, main="ROC Curve")
-
-#Actual ROC Curve
-# logistic regression model on  without step on training the data
-tele<-glm(Churn ~PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,family=binomial(link="logit"),data=telecomdata)
-preddicted_val<-predict(tele,type = "response")
-print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for the whole Telecom Data")
-table(telecomdata$Churn,preddicted_val>0.5)
-prediction_object<-prediction(preddicted_val,telecomdata$Churn)
-perf_1<-performance(prediction_object,measure = "tpr",x.measure = "fpr")
-plot(perf_1)
+test.predictionsstep_response <- predict(telecomModelstep_1,newdata=testData,type="response")
+fitted_result <- ifelse(test.predictionsstep_response > 0.5,'Yes','No')
+if(fitted_result == 'Yes')
+print("Customer is predicted to churn out of Verizon based on Model 1")
+else
+print("Customer is predicted to stay with Verizon based on Model 1")
 
 #Random Forest with selection variables
 set.seed(415)
 mytree_sel<-randomForest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,importance = T)
-varImpPlot(mytree_sel)
-print("********************************************Summary of Random Forest Prediction*****************************************************")
-print(mytree_sel)
-print("************************************************************************************************************************************")
 pred_sel<-predict(mytree_sel, newdata =testData)
-print("Confusion Matrix for Random Forest Prediction")
-table(pred_sel,testData$Churn)
-print(paste0("Accuracy of Random Forerst Prediction:",sum(diag(table(pred_sel,testData$Churn)))/nrow(testData)))
-
-#Random Forest Plotting
-mytree_sel<-rpart(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,method ="class",control=rpart.control(minsplit=2, cp=0.005))
-fancyRpartPlot(mytree_sel)
-mytree<-rpart(Churn ~ .,data=trainData,method = "class")
-plot(mytree)
-text(mytree)
-fancyRpartPlot(mytree)
+fitted_result_2 <- ifelse(pred_sel > 0.5,'Yes','No')
+if(fitted_result_2 == 'Yes')
+print("Customer is predicted to churn out of Verizon based on Model 2")
+else
+print("Customer is predicted to stay with Verizon based on Model 2")
