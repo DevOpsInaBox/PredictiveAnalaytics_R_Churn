@@ -1,18 +1,4 @@
 setwd("/var/lib/jenkins/workspace/PredictiveAnalytics_R_Churn/")
-library(caTools)
-library(Amelia)
-library(dplyr)
-library(stats)
-library(tree)
-library(randomForest)
-library(party)
-library(ROCR)
-library(pROC)
-library(rpart)
-library(rpart.plot)
-library(RColorBrewer)
-library(ggplot2)
-library(rattle)
 
 args<-commandArgs(TRUE)
 telecomdata<-read.csv("WA_Fn-UseC_-Telco-Customer-Churn.csv",header = T)
@@ -101,9 +87,6 @@ print("Customer is predicted to churn out of Verizon based on Model 1")
 }else{
 print("Customer is predicted to stay with Verizon based on Model 1")
 }
-
-str(telecomdata)
-str(testData)
 
 #Random Forest with selection variables
 #set.seed(415)
