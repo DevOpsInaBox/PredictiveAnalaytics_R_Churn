@@ -83,15 +83,15 @@ set.seed(123)
 telecomModelstep_1<-glm(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=telecomdata,family=binomial(link="logit"))
 
 # testData Preparation with input arguments from Java
-testData<-data.frame(PaymentMethod=factor(),OnlineSecurity=factor(),MonthlyCharges=double(),StreamingMovies=factor(),PaperlessBilling=factor(),StreamingTV=factor(),InternetService=factor(),Contract=factor(),tenure_interval=factor(),MultipleLines=factor(),SeniorCitizen=integer());
+#testData<-data.frame(PaymentMethod=factor(),OnlineSecurity=factor(),MonthlyCharges=double(),StreamingMovies=factor(),PaperlessBilling=factor(),StreamingTV=factor(),InternetService=factor(),Contract=factor(),tenure_interval=factor(),MultipleLines=factor(),SeniorCitizen=integer());
 tenure_intr <- sapply(args[9],group_tenure)
 tenure_intr <- as.factor(tenure_intr)
 #args[1]<-substr(args[1],2,nchar(args[1])-1)
 #args[7]<-substr(args[7],2,nchar(args[7])-1)
-x<-data.frame(args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],tenure_intr,args[10],args[11])
-names(x)<-c("PaymentMethod","OnlineSecurity","MonthlyCharges","StreamingMovies","PaperlessBilling","StreamingTV","InternetService","Contract","tenure_interval","MultipleLines","SeniorCitizen")
-testData<-rbind(testData,x)
-
+#x<-data.frame(args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],tenure_intr,args[10],args[11])
+#names(x)<-c("PaymentMethod","OnlineSecurity","MonthlyCharges","StreamingMovies","PaperlessBilling","StreamingTV","InternetService","Contract","tenure_interval","MultipleLines","SeniorCitizen")
+#testData<-rbind(testData,x)
+testData<-data.frame(PaymentMethod=as.factor(args[1]),OnlineSecurity=as.factor(args[2]),MonthlyCharges=as.double(args[3]),StreamingMovies=as.factor(args[4]),PaperlessBilling=as.factor(args[5]),StreamingTV=as.factor(args[6]),InternetService=as.factor(args[7]),Contract=as.factor(args[8]),tenure_interval=as.factor(tenure_intr),MultipleLines=as.factor(args[10]),SeniorCitizen=as.integer(args[11]));
 # Predict with the model and input args. If the prediction probability is greater than 0.5 then those 
 # customers are classified as churned customer less than 0.5 are classified as not churning customer
 test.predictionsstep_response <- predict(telecomModelstep_1,newdata=testData,type="response")
@@ -103,7 +103,7 @@ print("Customer is predicted to stay with Verizon based on Model 1")
 
 #Random Forest with selection variables
 set.seed(415)
-mytree_sel<-randomForest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,importance = T)
+mytree_sel<-randomForest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=telecomdata,importance = T)
 pred_sel<-predict(mytree_sel, newdata =testData)
 fitted_result_2 <- ifelse(pred_sel > 0.5,'Yes','No')
 if(fitted_result_2 == 'Yes')
