@@ -97,9 +97,10 @@ testData<-data.frame(PaymentMethod=as.factor(args[1]),OnlineSecurity=as.factor(a
 test.predictionsstep_response <- predict(telecomModelstep_1,newdata=testData,type="response")
 fitted_result <- ifelse(test.predictionsstep_response > 0.5,'Yes','No')
 if(fitted_result == 'Yes'){
-print("Customer is predicted to churn out of Verizon based on Model 1")}
-else{
-print("Customer is predicted to stay with Verizon based on Model 1")}
+print("Customer is predicted to churn out of Verizon based on Model 1")
+}else{
+print("Customer is predicted to stay with Verizon based on Model 1")
+}
 
 #Random Forest with selection variables
 set.seed(415)
@@ -107,6 +108,7 @@ mytree_sel<-randomForest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+Str
 pred_sel<-predict(mytree_sel, newdata =testData)
 fitted_result_2 <- ifelse(pred_sel > 0.5,'Yes','No')
 if(fitted_result_2 == 'Yes'){
-print("Customer is predicted to churn out of Verizon based on Model 2")}
-else{
-print("Customer is predicted to stay with Verizon based on Model 2")}
+print("Customer is predicted to churn out of Verizon based on Model 2")
+}else{
+print("Customer is predicted to stay with Verizon based on Model 2")
+}
