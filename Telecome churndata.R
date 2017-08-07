@@ -79,7 +79,6 @@ telecomdata$StreamingMovies <- as.factor(telecomdata$StreamingMovies)
 # check the number of NA rows if it is relatively small in number then ignore those rows from the analysis
 telecomdata <- na.omit(telecomdata)
 
-
 # set the seed it will output same output when ever the model is executed
 set.seed(123)
 
@@ -116,7 +115,7 @@ print(paste0("Hence, Accuracy rate for the Prediction Model is found to be : ",a
 plot(roc(testData$Churn, test.predictionsstep_response, direction="<"), col="yellow", lwd=3, main="ROC Curve")
 
 #Actual ROC Curve
-prediction_object<-prediction(preddicted_val,telecomdata$Churn)
+prediction_object<-prediction(test.predictionsstep_response,telecomdata$Churn)
 perf_1<-performance(prediction_object,measure = "tpr",x.measure = "fpr")
 plot(perf_1)
 
