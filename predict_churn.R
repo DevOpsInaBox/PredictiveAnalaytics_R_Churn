@@ -86,6 +86,8 @@ telecomModelstep_1<-glm(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+Stre
 testData<-data.frame(PaymentMethod=factor(),OnlineSecurity=factor(),MonthlyCharges=double(),StreamingMovies=factor(),PaperlessBilling=factor(),StreamingTV=factor(),InternetService=factor(),Contract=factor(),tenure_interval=factor(),MultipleLines=factor(),SeniorCitizen=integer());
 tenure_intr <- sapply(args[9],group_tenure)
 tenure_intr <- as.factor(tenure_intr)
+args[1]<-substr(args[1],2,last-1)
+args[7]<-substr(args[7],2,last-1)
 x<-data.frame(args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],tenure_intr,args[10],args[11])
 names(x)<-c("PaymentMethod","OnlineSecurity","MonthlyCharges","StreamingMovies","PaperlessBilling","StreamingTV","InternetService","Contract","tenure_interval","MultipleLines","SeniorCitizen")
 testData<-rbind(testData,x)
