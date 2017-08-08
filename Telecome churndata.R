@@ -90,6 +90,7 @@ sample <- sample.split(telecomdata$Churn,SplitRatio=0.70)
 trainData <- subset(telecomdata,sample==TRUE)
 testData <- subset(telecomdata,sample==FALSE)
 #Stepwise Regression
+print("***********************Backward Stepwise Regression used for filtering out insignificant Variables from Prediction**************************")
 telecomModelstep <- step(glm(Churn ~ .,family=binomial(link="logit"),data=trainData),direction = "backward")
 telecomModelstep_1<-glm(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,family=binomial(link="logit"))
 plot(telecomModelstep_1)
