@@ -129,7 +129,7 @@ print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for
 table(telecomdata$Churn,preddicted_val>0.5)
 prediction_object<-prediction(preddicted_val,telecomdata$Churn)
 perf_1<-performance(prediction_object,measure = "tpr",x.measure = "fpr")
-plot(perf_1,main="Performance of Logistic Model using Plot between True Positive Rate and False Positive rate")
+plot(perf_1,main="Performance of Logistic Model using Plot between True Positive Rate and False Positive rate",cex.main=9)
 
 #Random Forest with selection variables
 set.seed(415)
