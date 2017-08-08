@@ -14,12 +14,13 @@ library(ggplot2)
 library(rattle)
 
 #setwd("E:\\Data Creation\\Telecom")
+print("************************************************Dataset is currently loading**********************************************")
 telecomdata<-read.csv("WA_Fn-UseC_-Telco-Customer-Churn.csv",header = T)
-which(is.na(telecomdata$tenure))
+print(paste0("Is the data filled with junk values in any row: ",any(is.na(telecomdata))))
+print("****************************************Data rows with junk values in the dataset******************************************")
 telecomdata[!complete.cases(telecomdata), ]
-
+print("*******************************Churn categories and counts in the given dataset********************************************")
 table(telecomdata$Churn)
-any(is.na(telecomdata))
 #Create new column tenure_interval from the tenure column
 group_tenure <- function(tenure){
   if (tenure >= 0 && tenure <= 6){
@@ -77,12 +78,14 @@ telecomdata$StreamingMovies <- as.factor(telecomdata$StreamingMovies)
 
 
 # check the number of NA rows if it is relatively small in number then ignore those rows from the analysis
+print("*************************************Data rows with junk values are now removed in the dataset******************************************")
 telecomdata <- na.omit(telecomdata)
 
 # set the seed it will output same output when ever the model is executed
 set.seed(123)
 
 # sample the input data with 70% for training and 30% for testing
+print("*******************************Input dataset split into 70% for training and 30% for testing Prediction Model****************************")
 sample <- sample.split(telecomdata$Churn,SplitRatio=0.70)
 trainData <- subset(telecomdata,sample==TRUE)
 testData <- subset(telecomdata,sample==FALSE)
@@ -90,6 +93,7 @@ testData <- subset(telecomdata,sample==FALSE)
 telecomModelstep <- step(glm(Churn ~ .,family=binomial(link="logit"),data=trainData),direction = "backward")
 telecomModelstep_1<-glm(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,family=binomial(link="logit"))
 plot(telecomModelstep_1)
+print("*******************************************Prediction Model building using Logistic Regression with Training Data*************************************")
 print(summary(telecomModelstep_1))
 
 # test the model with test dataset
@@ -103,6 +107,7 @@ testData$Churn[testData$Churn=="No"] <- "0"
 testData$Churn[testData$Churn=="Yes"] <- "1"
 
 # confusion matrix
+print("*******************Prediction Model is now used for predicting the Churn for Test data and compared with Actual Churn**************************")
 print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for Test Data")
 table(testData$Churn,test.predictionsstep_response > 0.5)
 # calculating the misclassfication rate
@@ -112,30 +117,32 @@ print(paste0("Misclassification rate for the Prediction Model is found to be : "
 accuracyRate <- 1-misClasificationError
 print(paste0("Hence, Accuracy rate for the Prediction Model is found to be : ",accuracyRate))
 
-plot(roc(testData$Churn, test.predictionsstep_response, direction="<"), col="yellow", lwd=3, main="ROC Curve")
+plot(roc(testData$Churn, test.predictionsstep_response, direction="<"), col="yellow", lwd=3, main="ROC Curve with 70% of Dataset")
 
 #Actual ROC Curve
 # logistic regression model on  without step on training the data
+print("***********************************Prediction Model building using Logistic Regression with Whole Input Dataset*************************************")
 tele<-glm(Churn ~PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,family=binomial(link="logit"),data=telecomdata)
 preddicted_val<-predict(tele,type = "response")
 print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for the whole Telecom Data")
 table(telecomdata$Churn,preddicted_val>0.5)
 prediction_object<-prediction(preddicted_val,telecomdata$Churn)
 perf_1<-performance(prediction_object,measure = "tpr",x.measure = "fpr")
-plot(perf_1)
+plot(perf_1,main="Performance of Logistic Model using Plot between True Positive Rate and False Positive rate")
 
 #Random Forest with selection variables
 set.seed(415)
 mytree_sel<-randomForest(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,importance = T)
 varImpPlot(mytree_sel)
-print("********************************************Summary of Random Forest Prediction*****************************************************")
+print("********************************************Summary of Random Forest Prediction using Training data*****************************************************")
 print(mytree_sel)
-print("************************************************************************************************************************************")
 pred_sel<-predict(mytree_sel, newdata =testData)
-print("Confusion Matrix for Random Forest Prediction")
+print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for Test Data")
 table(pred_sel,testData$Churn)
-print(paste0("Accuracy of Random Forerst Prediction:",sum(diag(table(pred_sel,testData$Churn)))/nrow(testData)))
-
+accuracy_rate<-sum(diag(table(pred_sel,testData$Churn)))/nrow(testData)
+print(paste0("Accuracy of Random Forert Prediction:",accuracy_rate))
+print(paste0("Misclassification rate of Random Forert Prediction:",1-accuracy_rate))
+print("Refer to the Random Forest clasification Tree in the RPlots pdf for your reference")
 #Random Forest Plotting
 mytree_sel<-rpart(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,method ="class",control=rpart.control(minsplit=2, cp=0.005))
 fancyRpartPlot(mytree_sel)
