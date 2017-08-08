@@ -129,7 +129,7 @@ print("Confusion Matrix for Actual Churn(Y axis) and Predicted Churn(X axis) for
 table(telecomdata$Churn,preddicted_val>0.5)
 prediction_object<-prediction(preddicted_val,telecomdata$Churn)
 perf_1<-performance(prediction_object,measure = "tpr",x.measure = "fpr")
-plot(perf_1,main="Performance of Logistic Model using Plot between True Positive Rate and False Positive rate",cex.main=9)
+plot(perf_1,main="Logistic Model Performance - True Positive Rate Vs False Positive rate")
 
 #Random Forest with selection variables
 set.seed(415)
@@ -148,6 +148,4 @@ print("Refer to the Random Forest clasification Tree in the RPlots pdf for your 
 mytree_sel<-rpart(Churn ~ PaymentMethod+OnlineSecurity+MonthlyCharges+StreamingMovies+PaperlessBilling+StreamingTV+InternetService+Contract+tenure_interval+MultipleLines+SeniorCitizen,data=trainData,method ="class",control=rpart.control(minsplit=2, cp=0.005))
 fancyRpartPlot(mytree_sel)
 mytree<-rpart(Churn ~ .,data=trainData,method = "class")
-plot(mytree)
-text(mytree)
 fancyRpartPlot(mytree)
