@@ -11,6 +11,8 @@ library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
 library(ggplot2)
+# Install RGtk2 package and use library(RGtk2) in RGUI so that you can respond to installation prompt for GTK+
+# Install rattle package using install.packages("rattle",dependencies=T)
 library(rattle)
 
 #setwd("E:\\Data Creation\\Telecom")
