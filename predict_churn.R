@@ -1,5 +1,5 @@
 #setwd("/var/lib/jenkins/workspace/PredictiveAnalytics_R_Churn/")
-#setwd("E:\\Confidential\\Case Studies\\Predictive Analytics\\POC on Telecom Churn")
+setwd("E:\\Confidential\\Case Studies\\Predictive Analytics\\POC on Telecom Churn")
 library(dplyr)
 args<-commandArgs(TRUE)
 telecomdata<-read.csv("WA_Fn-UseC_-Telco-Customer-Churn.csv",header = T)
