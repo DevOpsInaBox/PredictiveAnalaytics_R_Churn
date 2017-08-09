@@ -11,7 +11,7 @@ library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
 library(ggplot2)
-library(rattle)
+#library(rattle)
 
 #setwd("E:\\Data Creation\\Telecom")
 print("************************************************Dataset is currently loading**********************************************")
