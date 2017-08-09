@@ -11,7 +11,6 @@ library(rpart)
 library(rpart.plot)
 library(RColorBrewer)
 library(ggplot2)
-library(RGtk2)
 library(rattle)
 
 #setwd("E:\\Data Creation\\Telecom")
